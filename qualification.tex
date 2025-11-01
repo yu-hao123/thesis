@@ -17,25 +17,35 @@
 % ========== Packages ==========
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath,amsthm,amsfonts,amssymb}
-\usepackage{graphicx,cite,enumerate}
+\usepackage{graphicx,cite,enumerate,longtable}
 \usepackage{libertinus}
+\usepackage{booktabs}
 
-\usepackage[
-  colorlinks = true,
-  linkcolor  = black,
-  citecolor  = blue,
-  urlcolor   = magenta,
-  linktoc    = all
-]{hyperref}
+% ========== Lorem ipsum ==========
+\usepackage{blindtext}
 
 % ========== Language options ==========
 %\usepackage[brazil]{babel}
 \usepackage[english]{babel}
 
+
+% Package for including code in the document
+\usepackage{listings}
+
+% bookmarks in custom
+\usepackage[
+  colorlinks = true,
+  linkcolor  = black,
+  citecolor  = blue,
+  urlcolor   = magenta,
+  linktoc    = all,
+  bookmarks  = true
+]{hyperref}
+
 % reformats list of figures
 \makeatletter
 \renewcommand*\l@figure[2]{%
-  \@dottedtocline{1}{1.5em}{2.3em}{FIGURE~#1}{#2}%
+\@dottedtocline{1}{1.5em}{2.3em}{FIGURE~#1}{#2}%
 }
 \makeatother
 
@@ -45,9 +55,6 @@
 
 % Forçar o abntex2 a usar [ ] nas referências ao invés de ( )
 %\citebrackets{[}{]}
-
-% ========== Lorem ipsum ==========
-\usepackage{blindtext}
 
 % ========== Opções do documento ==========
 % Título
@@ -82,11 +89,14 @@
 % Ano
 \data{2025}
 
+
+
 \begin{document}
 % ========== Capa e folhas de rosto ==========
 \capa
 %\falsafolhaderosto
 \folhaderosto
+
 
 % ========== Folha de assinaturas (opcional) ==========
 %\begin{folhadeaprovacao}
@@ -100,14 +110,12 @@
 %	http://www.poli.usp.br/en/bibliotecas/servicos/catalogacao-na-publicacao.html
 
 % ========== Dedicatória (opcional) ==========
-\dedicatoria{Dedicatória}
+%\dedicatoria{Dedicatória}
 
 % ========== Agradecimentos ==========
-\begin{agradecimentos}
-
-Thanks
-
-\end{agradecimentos}
+%\begin{agradecimentos}
+%Thanks
+%\end{agradecimentos}
 
 % ========== Epígrafe (opcional) ==========
 \epigrafe{%
@@ -123,7 +131,7 @@ Resumo
 %
 \\[3\baselineskip]
 %
-\textbf{Palavras-Chave}  Palavra, Palavra, Palavra, Palavra, Palavra.
+\textbf{Palavras-Chave} Palavra, Palavra, Palavra, Palavra, Palavra.
 \end{resumo}
 
 % ========== Abstract ==========
@@ -132,7 +140,7 @@ Abstract
 %
 \\[3\baselineskip]
 %
-\textbf{Keywords}  Word, Word, Word, Word, Word.
+\textbf{Keywords} Word, Word, Word, Word, Word.
 \end{abstract}
 
 
@@ -141,33 +149,17 @@ Abstract
 \listadetabelas
 
 % ========== Listas definidas pelo usuário (opcional) ==========
-\begin{pretextualsection}{List of Symbols}
-
-Lista de símbolos
-
-\end{pretextualsection}
+\include{chapters/C0_abbreviations}
 
 % ========== Sumário ==========
 \sumario
 
 % ========== Elementos textuais ==========
 
-%\part{Introdution}
-
-\chapter{Introduction}
-\capepigrafe[0.5\textwidth]{``Frase espirituosa de um autor famoso''}{Autor famoso}
-
-\blindtext
-
-\begin{citacaoLonga}
-	\blindtext
-\end{citacaoLonga}
-
-\blindtext
-
-testing bibliography~\cite{Assenmacher1993}
-
-\blinddocument
+\include{chapters/C1_introduction}
+\include{chapters/C2_objectives}
+\include{chapters/C3_methods}
+\include{chapters/C4_results}
 
 % ========== Referências ==========
 % --- IEEE ---
@@ -177,16 +169,14 @@ testing bibliography~\cite{Assenmacher1993}
 % --- ABNT (requer ABNTeX 2) ---
 %	http://www.ctan.org/tex-archive/macros/latex/contrib/abntex2
 \bibliographystyle{abntex2-num}
-\bibliography{bibliography_template}
+\bibliography{bibliography_thesis}
 
 % ========== Apêndices (opcional) ==========
 \apendice
-\chapter{}
-\chapter{Beta}
+\chapter{Alpha}
 
 % ========== Anexos (opcional) ==========
 \anexo
 \chapter{Alpha}
-\chapter{}
 
 \end{document}
