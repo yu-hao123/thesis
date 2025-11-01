@@ -28,7 +28,6 @@
 %\usepackage[brazil]{babel}
 \usepackage[english]{babel}
 
-
 % Package for including code in the document
 \usepackage{listings}
 
@@ -39,13 +38,56 @@
   citecolor  = blue,
   urlcolor   = magenta,
   linktoc    = all,
-  bookmarks  = true
+  bookmarks  = true,
+  bookmarksnumbered = true,
+  bookmarksopen = true
 ]{hyperref}
 
 % reformats list of figures
 \makeatletter
 \renewcommand*\l@figure[2]{%
 \@dottedtocline{1}{1.5em}{2.3em}{FIGURE~#1}{#2}%
+}
+\makeatother
+
+% PRETEXTUAL AND NUMBERED BOOKMARKS FIX
+\makeatletter
+% --- PART 1: Fix for Numbered Chapters (after \sumario) ---
+%
+% The class's \ABNTaddcontentsline command creates broken links.
+% We replace it with the standard, working \addcontentsline.
+%
+\renewcommand{\ABNTaddcontentsline}[3]{%
+	\ifthenelse{\boolean{ABNTNextOutOfTOC}}%
+		{\setboolean{ABNTNextOutOfTOC}{false}}%
+		{%
+		  \addcontentsline{#1}{#2}{#3}%
+		}%
+}
+
+% --- PART 2: Fix for Pretextual Chapters (before \sumario) ---
+%
+% We patch \@schapter to manually create bookmarks, since aren't in the TOC.
+%
+\let\politex@original@schapter\@schapter
+\def\@schapter#1{%
+	\def\temptitle{#1}%
+	\def\contentstitle{\contentsname}%
+
+	\ifx\temptitle\contentstitle
+		% This is the Table of Contents ("Sumário").
+		% Run the original command *without* \pdfbookmark
+		% to allow the TOC to build correctly.
+		\politex@original@schapter{#1}%
+	\else
+		% This is "Resumo", "Abstract", "Lista de Figuras", etc.
+		% manually create the PDF bookmark and its anchor.
+		\pdfbookmark[0]{#1}{#1}%
+
+		% Run the original command to print the title.
+		% (Since ABNTaftertoc is false, this won't go to the TOC)
+		\politex@original@schapter{#1}%
+	\fi
 }
 \makeatother
 
@@ -89,14 +131,11 @@
 % Ano
 \data{2025}
 
-
-
 \begin{document}
 % ========== Capa e folhas de rosto ==========
 \capa
 %\falsafolhaderosto
 \folhaderosto
-
 
 % ========== Folha de assinaturas (opcional) ==========
 %\begin{folhadeaprovacao}
@@ -142,7 +181,6 @@ Abstract
 %
 \textbf{Keywords} Word, Word, Word, Word, Word.
 \end{abstract}
-
 
 % ========== Listas (opcional) ==========
 \listadefiguras
