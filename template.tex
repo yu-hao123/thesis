@@ -2,7 +2,7 @@
 % ========== Opções ==========
 % pnumromarab - Numeração de páginas usando algarismos romanos na parte pré-textual e arábicos na parte textual
 % abnttoc - Forçar paginação no sumário conforme ABNT (inclui "p." na frente das páginas)
-% normalnum - Numeração contínua de figuras e tabelas 
+% normalnum - Numeração contínua de figuras e tabelas
 %	(caso contrário, a numeração é reiniciada a cada capítulo)
 % draftprint - Ajusta as margens para impressão de rascunhos
 %	(reduz a margem interna)
@@ -14,17 +14,30 @@
 % times - Tenta usar a fonte Times New Roman para o corpo do texto
 % noindentfirst - Não indenta o primeiro parágrafo dos capítulos/seções
 
-
 % ========== Packages ==========
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath,amsthm,amsfonts,amssymb}
 \usepackage{graphicx,cite,enumerate}
+\usepackage{libertinus}
 
+\usepackage[
+  colorlinks = true,
+  linkcolor  = black,
+  citecolor  = blue,
+  urlcolor   = magenta,
+  linktoc    = all
+]{hyperref}
 
 % ========== Language options ==========
-\usepackage[brazil]{babel}
-%\usepackage[english]{babel}
+%\usepackage[brazil]{babel}
+\usepackage[english]{babel}
 
+% reformats list of figures
+\makeatletter
+\renewcommand*\l@figure[2]{%
+  \@dottedtocline{1}{1.5em}{2.3em}{FIGURE ~#1}{#2}%
+}
+\makeatother
 
 % ========== ABNT (requer ABNTeX 2) ==========
 %	http://www.ctan.org/tex-archive/macros/latex/contrib/abntex2
@@ -33,18 +46,15 @@
 % Forçar o abntex2 a usar [ ] nas referências ao invés de ( )
 %\citebrackets{[}{]}
 
-
 % ========== Lorem ipsum ==========
 \usepackage{blindtext}
 
-
-
 % ========== Opções do documento ==========
 % Título
-\titulo{Título}
+\titulo{Identifiability of Respiratory Mechanics: Limitations of Single Cycle Estimation and Proposal of Multiple Cycle Maneuvers}
 
 % Autor
-\autor{Nome Sobrenome}
+\autor{Yu Hao Wang Xia}
 
 % Para múltiplos autores (TCC)
 %\autor{Nome Sobrenome\\%
@@ -52,35 +62,31 @@
 %		Nome Sobrenome}
 
 % Orientador / Coorientador
-\orientador{Nome do orientador}
-\coorientador{Nome do coorientador (opcional)}
+\orientador{Prof. Dr. Marcelo Britto Passos Amato}
+%\coorientador{Nome do coorientador (opcional)}
 
 % Tipo de documento
 %\tcc{Eletricista com ênfase em Sistemas Eletrônicos}
-\dissertacao{Engenharia Elétrica}
-%\teseDOC{Engenharia Elétrica}
+%\dissertacao{Engenharia Elétrica}
+\teseDOC{Science}
 %\teseLD
 %\memorialLD
 
 % Departamento e área de concentração
-\departamento{Nome do departamento}
-\areaConcentracao{Área de concentração}
+\departamento{None}
+\areaConcentracao{Respiratory Sciences}
 
 % Local
 \local{São Paulo}
 
 % Ano
-\data{2013}
-
-
-
+\data{2025}
 
 \begin{document}
 % ========== Capa e folhas de rosto ==========
 \capa
-\falsafolhaderosto
+%\falsafolhaderosto
 \folhaderosto
-
 
 % ========== Folha de assinaturas (opcional) ==========
 %\begin{folhadeaprovacao}
@@ -89,15 +95,12 @@
 %	\assinatura{Prof.\ Z}
 %\end{folhadeaprovacao}
 
-
 % ========== Ficha catalográfica ==========
 % Fazer solicitação no site:
 %	http://www.poli.usp.br/en/bibliotecas/servicos/catalogacao-na-publicacao.html
 
-
 % ========== Dedicatória (opcional) ==========
 \dedicatoria{Dedicatória}
-
 
 % ========== Agradecimentos ==========
 \begin{agradecimentos}
@@ -106,15 +109,13 @@ Thanks...
 
 \end{agradecimentos}
 
-
 % ========== Epígrafe (opcional) ==========
 \epigrafe{%
-	\emph{``Epígrafe''}
+	\emph{``O Brasil é grande demais para sonharmos pequeno''}
 	\begin{flushright}
-		-{}- Autor
+		-{}- Ozires Silva
 	\end{flushright}
 }
-
 
 % ========== Resumo ==========
 \begin{resumo}
@@ -124,7 +125,6 @@ Resumo...
 %
 \textbf{Palavras-Chave} -- Palavra, Palavra, Palavra, Palavra, Palavra.
 \end{resumo}
-
 
 % ========== Abstract ==========
 \begin{abstract}
@@ -141,7 +141,7 @@ Abstract...
 \listadetabelas
 
 % ========== Listas definidas pelo usuário (opcional) ==========
-\begin{pretextualsection}{Lista de símbolos}
+\begin{pretextualsection}{List of Symbols}
 
 Lista de símbolos...
 
@@ -150,13 +150,11 @@ Lista de símbolos...
 % ========== Sumário ==========
 \sumario
 
-
-
 % ========== Elementos textuais ==========
 
-\part{Introdução}
-	
-\chapter{Capítulo com epígrafe}
+%\part{Introdution}
+
+\chapter{Introduction}
 \capepigrafe[0.5\textwidth]{``Frase espirituosa de um autor famoso''}{Autor famoso}
 
 \blindtext
@@ -167,10 +165,9 @@ Lista de símbolos...
 
 \blindtext
 
-
+testing bibliography ~\cite{Assenmacher1993}
 
 \blinddocument
-
 
 % ========== Referências ==========
 % --- IEEE ---
@@ -179,22 +176,17 @@ Lista de símbolos...
 
 % --- ABNT (requer ABNTeX 2) ---
 %	http://www.ctan.org/tex-archive/macros/latex/contrib/abntex2
-%\bibliographystyle{abntex2-num}
-
-%\bibliography{}
-
+\bibliographystyle{abntex2-num}
+\bibliography{bibliography_template}
 
 % ========== Apêndices (opcional) ==========
 \apendice
 \chapter{}
 \chapter{Beta}
 
-
 % ========== Anexos (opcional) ==========
 \anexo
 \chapter{Alpha}
 \chapter{}
-
-
 
 \end{document}
