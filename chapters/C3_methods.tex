@@ -1,1 +1,116 @@
-\chapter{Materials and Methods}
+\chapter{MATERIALS AND METHODS}
+
+
+\section{Algorithms formulation}
+
+Assuming a first-order model for the respiratory system~\cite{bates2009}:
+
+\begin{equation}
+P_{\text{total}}(t) = P_{\text{aw}}(t) + P_{\text{mus}}(t) = E_{\text{rs}} \cdot V(t) + R_{\text{rs}} \cdot \dot{V}(t) + P_0
+\label{eq:equation_motion}
+\end{equation}
+
+
+The explored \hl{(determininistic/modelling (?))} algorithms apply contrained optimization techniques
+in the respiratory equation of motion.
+The problem of estimating $P_{\text{mus}}$, $R$, $E$ within a single cycle is indetermined ($N+2$ variables for $N$ equations as will be detailed below),
+but the explored algorithms argument is that by introducing constraints on the $P_{\text{mus}}$ waveform format and the ranges of possible resistances and compliances, the problem becomes solvable.
+
+~\cite{vicario2016} formulated the estimation problem as a constrained optimization problem with cost function:
+\begin{equation}
+J = \sum_{k=1}^{N}
+\left(
+P_{\text{aw}}(t_k) -\left(R\dot{V}(t_k) + E V(t_k) + \tilde{P}_{\text{mus}}(t_k)\right)
+\right)^2
+\label{eq:cost_function}
+\end{equation}
+to be minimized subject to the following constraints:
+\begin{subequations}
+\begin{align}
+\tilde{P}_{\text{mus}}(t_{k+1}) - \tilde{P}_{\text{mus}}(t_k) &\le 0,
+&& \text{for } k = 1,2,\ldots,m-1 \label{eq:constraint1} \\
+\tilde{P}_{\text{mus}}(t_{k+1}) - \tilde{P}_{\text{mus}}(t_k) &\ge 0,
+&& \text{for } k = m,m+1,\ldots,q-1 \label{eq:constraint2} \\
+\tilde{P}_{\text{mus}}(t_{k+1}) - \tilde{P}_{\text{mus}}(t_k) &= 0,
+&& \text{for } k = q,q+1,\ldots,N-1 \label{eq:constraint3}
+\end{align}
+\end{subequations}
+where $t_k$ denotes the $k$th time sample, $N$ is the total number of time samples in the breath.
+\hl{The motivation behind these constraints is to define monotonicity of the muscle pressure format?} (Equations~\ref{eq:constraint1}–\ref{eq:constraint3}) is the
+\hl{The parameters $t_m$ and $t_q$ define:}
+
+The unknown variables over which $J$ is minimized are $R, E, \tilde{P}_{\text{mus}}(t_1), \ldots, \tilde{P}_{\text{mus}}(t_N)$.
+Additional constraints limit $\tilde{P}_{\text{mus}}(t_k)$, $R$ and $E$ to positive values and within their physiological ranges:
+\begin{subequations}
+\begin{align}
+R_{\text{min}} &\le R \le R_{\text{max}} \label{eq:R_bounds} \\
+E_{\text{min}} &\le E \le E_{\text{max}} \label{eq:E_bounds} \\
+\tilde{P}_{\text{min}} &\le \tilde{P}_{\text{mus}}(t_k) \le \tilde{P}_{\text{max}}. \label{eq:pmus_bounds}
+\end{align}
+\end{subequations}
+
+LS optimization problem. In other words, Another way to interpret the Equation~\ref{eq:cost_function} is that
+the optimization solver is trying to obtain the closest possible estimative of $P_{\text{aw}}$
+given the equation of motion, flow, volume and constraints on the unknown variables.
+We can call the second term of the Equation~\ref{eq:cost_function} the estimative of airway pressure:
+
+
+
+
+
+\begin{equation}
+P_{\text{aw}}^{\text{est}}(t_k)  = \left(R\dot{V}(t_k) + E V(t_k) + \tilde{P}_{\text{mus}}(t_k)\right)
+\label{eq:paw_est}
+\end{equation}
+
+~\cite{victorjr2023} improved the estimation and computational time by adding switching times:
+explain Pawest -> equation
+
+
+Another explored algorithm is the one proposed by~\cite{lv2025}. It is given as follows:
+
+\section{Implementation environment}
+
+Gurobi, YALMIP, MATLAB softwares, hardware used.
+
+Code repository available in github/pmus-benchmarking.git (instructions of use, reproducibility).
+
+\section{Proposed improvements}
+
+This work proposes a improvement of using the information of more than one cycle,
+as opposed to the current standard/understandings on non-invasive respiratory effort estimation.
+For that purpose, excitation maneuvers will be applied in the experimental setting
+with the objective to create variability and \hl{add more information} to the optimization problem.
+
+\subsection{Maneuvers}
+
+Description of all attempted maneuvers: P0.1, inspiratory pause, PS increase.
+
+\subsection{Dual cycle estimation}
+
+\section{Data acquisition}
+\subsection{Benchtop experiment}
+\begin{itemize}
+    \item ASL 5000\textsuperscript{\texttrademark} Breathing Simulator is connected to a mechanical ventilator FlexiMag Max 700
+(Magnamed\textsuperscript{\textregistered}, Sao Paulo, Brazil) configuration steps (pressure, resistance, compliance), ventilation modes, physical setup.
+    \item Sampling frequency, acquisition duration, signal pre-processing.
+\end{itemize}
+
+\subsection{Patient data analysis (Restrospective (?))}
+\begin{itemize}
+    \item Dataset origin, ethical comittee number, anonymization.
+    \item Patients description, inclusion/exclusion criteria, condition, modes, duration.
+\end{itemize}
+
+\section{Evaluation methods}
+
+\subsection{Profile likelihood}
+
+\subsection{Cost function heatmap}
+
+\subsection{PMUS variability within cost valley}
+
+\subsection{Global statistics}
+
+PMUS Amplitudes and PTPmus Bland-Altman plot in experimental and patient data. \\
+Performance comparison of the three algorithms Victor, Lv, Xia.

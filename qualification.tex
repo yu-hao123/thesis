@@ -21,8 +21,11 @@
 \usepackage{libertinus}
 \usepackage{booktabs}
 
-% ========== Lorem ipsum ==========
-\usepackage{blindtext}
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+\usepackage{lipsum} % lorem ipsum
+\usepackage{xcolor}  % must come before soul
+\usepackage{soul} % highlight text
 
 % ========== Language options ==========
 %\usepackage[brazil]{babel}
@@ -35,7 +38,7 @@
 \usepackage[
   colorlinks = true,
   linkcolor  = black,
-  citecolor  = blue,
+  citecolor  = black,
   urlcolor   = magenta,
   linktoc    = all,
   bookmarks  = true,
@@ -93,7 +96,7 @@
 
 % ========== ABNT (requer ABNTeX 2) ==========
 %	http://www.ctan.org/tex-archive/macros/latex/contrib/abntex2
-%\usepackage[num]{abntex2cite}
+\usepackage[alf]{abntex2cite}
 
 % Forçar o abntex2 a usar [ ] nas referências ao invés de ( )
 %\citebrackets{[}{]}
@@ -133,9 +136,9 @@
 
 \begin{document}
 % ========== Capa e folhas de rosto ==========
-\capa
+\capa%
 %\falsafolhaderosto
-\folhaderosto
+\folhaderosto%
 
 % ========== Folha de assinaturas (opcional) ==========
 %\begin{folhadeaprovacao}
@@ -170,7 +173,7 @@ Resumo
 %
 \\[3\baselineskip]
 %
-\textbf{Palavras-Chave} Palavra, Palavra, Palavra, Palavra, Palavra.
+\textbf{Palavras-Chave:} Palavra, Palavra, Palavra, Palavra, Palavra.
 \end{resumo}
 
 % ========== Abstract ==========
@@ -179,19 +182,19 @@ Abstract
 %
 \\[3\baselineskip]
 %
-\textbf{Keywords} Word, Word, Word, Word, Word.
+\textbf{Keywords:} Word, Word, Word, Word, Word.
 \end{abstract}
 
 % ========== Listas (opcional) ==========
-\listadefiguras
-\listadetabelas
+\listadefiguras%
+\listadetabelas%
 
 % ========== Listas definidas pelo usuário (opcional) ==========
 \include{chapters/C0_abbreviations}
+\include{chapters/C0_symbols}
 
 % ========== Sumário ==========
-\sumario
-
+\sumario%
 % ========== Elementos textuais ==========
 
 \include{chapters/C1_introduction}
@@ -210,11 +213,11 @@ Abstract
 \bibliography{bibliography_thesis}
 
 % ========== Apêndices (opcional) ==========
-\apendice
+\apendice%
 \chapter{Alpha}
 
 % ========== Anexos (opcional) ==========
-\anexo
+\anexo%
 \chapter{Alpha}
 
 \end{document}
