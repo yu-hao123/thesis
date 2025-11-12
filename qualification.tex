@@ -1,4 +1,4 @@
-\documentclass[]{politex}
+\documentclass[normalnum]{politex}
 % ========== Opções ==========
 % pnumromarab - Numeração de páginas usando algarismos romanos na parte pré-textual e arábicos na parte textual
 % abnttoc - Forçar paginação no sumário conforme ABNT (inclui "p." na frente das páginas)
@@ -46,6 +46,9 @@
   bookmarksopen = true
 ]{hyperref}
 
+\addto\captionsenglish{%
+  \renewcommand{\figurename}{FIGURE}%
+}
 % reformats list of figures
 \makeatletter
 \renewcommand*\l@figure[2]{%
