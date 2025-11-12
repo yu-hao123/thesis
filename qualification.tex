@@ -53,13 +53,9 @@
 }
 \makeatother
 
-% PRETEXTUAL AND NUMBERED BOOKMARKS FIX
+% FIX BOOKMARKS
 \makeatletter
-% --- PART 1: Fix for Numbered Chapters (after \sumario) ---
-%
-% The class's \ABNTaddcontentsline command creates broken links.
-% We replace it with the standard, working \addcontentsline.
-%
+% Replaces the class's broken command with the standard one.
 \renewcommand{\ABNTaddcontentsline}[3]{%
 	\ifthenelse{\boolean{ABNTNextOutOfTOC}}%
 		{\setboolean{ABNTNextOutOfTOC}{false}}%
@@ -68,28 +64,32 @@
 		}%
 }
 
-% --- PART 2: Fix for Pretextual Chapters (before \sumario) ---
-%
-% We patch \@schapter to manually create bookmarks, since aren't in the TOC.
-%
+% Pretextual Chapters
+% Patches the unnumbered chapter command \@schapter
 \let\politex@original@schapter\@schapter
 \def\@schapter#1{%
 	\def\temptitle{#1}%
 	\def\contentstitle{\contentsname}%
+	\def\bibtitle{\POLIbibliographyname}
 
 	\ifx\temptitle\contentstitle
-		% This is the Table of Contents ("Sumário").
-		% Run the original command *without* \pdfbookmark
-		% to allow the TOC to build correctly.
+		% This is "Sumario". Run original to build TOC
+		% and set the ABNTaftertoc flag to true.
 		\politex@original@schapter{#1}%
 	\else
-		% This is "Resumo", "Abstract", "Lista de Figuras", etc.
-		% manually create the PDF bookmark and its anchor.
-		\pdfbookmark[0]{#1}{#1}%
-
-		% Run the original command to print the title.
-		% (Since ABNTaftertoc is false, this won't go to the TOC)
-		\politex@original@schapter{#1}%
+		% Check if this is the Bibliography
+		\ifx\temptitle\bibtitle
+			% This is "References". Run original.
+			% Because ABNTaftertoc is true, it will go to the
+			% TOC, and Part 1 will create its bookmark.
+			\politex@original@schapter{#1}%
+		\else
+			% This is "Resumo", "Abstract", etc.
+			% 1. Manually create the PDF bookmark
+			\pdfbookmark[0]{#1}{#1}%
+			% 2. Run original (ABNTaftertoc is false, so no TOC entry)
+			\politex@original@schapter{#1}%
+		\fi
 	\fi
 }
 \makeatother
@@ -209,7 +209,7 @@ Abstract
 
 % --- ABNT (requer ABNTeX 2) ---
 %	http://www.ctan.org/tex-archive/macros/latex/contrib/abntex2
-\bibliographystyle{abntex2-num}
+\bibliographystyle{abntex2-alf}
 \bibliography{bibliography_thesis}
 
 % ========== Apêndices (opcional) ==========
