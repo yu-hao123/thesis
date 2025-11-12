@@ -34,27 +34,28 @@
 % Package for including code in the document
 \usepackage{listings}
 
-% bookmarks in custom
+% custom style for bookmarks and refs
 \usepackage[
   colorlinks = true,
   linkcolor  = black,
   citecolor  = black,
-  urlcolor   = magenta,
+  urlcolor   = black,
   linktoc    = all,
   bookmarks  = true,
   bookmarksnumbered = true,
   bookmarksopen = true
 ]{hyperref}
+\usepackage{cleveref}
 
 \addto\captionsenglish{%
   \renewcommand{\figurename}{FIGURE}%
 }
-% reformats list of figures
-\makeatletter
-\renewcommand*\l@figure[2]{%
-\@dottedtocline{1}{1.5em}{2.3em}{FIGURE~#1}{#2}%
-}
-\makeatother
+
+\usepackage{tocloft}
+% adds the word "FIGURE " before the number
+\renewcommand{\cftfigpresnum}{FIGURE }
+% box in table of figures
+\setlength{\cftfignumwidth}{6em}
 
 % FIX BOOKMARKS
 \makeatletter
