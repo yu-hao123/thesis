@@ -10,17 +10,25 @@ both organs. Thus, the primary aim of such monitoring is to maintain in the pati
 moderate amount of respiratory drive to prevent mechanical ventilation-induced complications and
 help in weaning~\cite{jonkman2020}.
 
-Explore monitoring (esophageal~\cite{akoumianaki2014,mauri2016}, maneuver surrogates PO.1 and Pooc) and estimation methods.
+In clinical practice, respiratory effort can be directly monitored using
+esophageal pressure measurements~\cite{akoumianaki2014,mauri2016},
+or indirectly through surrogate maneuvers such as the 100-milliseconds airway occlusion pressure (P0.1)
+and full-breath occluded airway pressure drop (Pocc)~\cite{bertoni2019,telias2020}.
+While esophageal manometry provides the most accurate measure of muscle effort, its invasiveness,
+calibration complexities and limited clinical use motivate the development of noninvasive alternatives.
+In contrast, P0.1 and Pocc reflect the patient's neural drive and the presence of
+excessive or insufficient effort, rather than providing a direct quantitative estimate
+of muscle pressure~\cite{vanoosten2024}.
 
-There are multiple estimators that apply some form of
-constrained optimization approach~\cite{vicario2016,victorjr2023,lv2025}.
+There is a growing amount of research focusing on the noninvasive estimation of respiratory effort
+using model-based approaches. Several studies apply constrained optimization formulations~\cite{vicario2016,victorjr2023,lv2025}.
+to obtain muscle pressure and respiratory mechanics parameters (resistance and compliance) from pressure, flow and volume signals.
+Recent developments even published clinical validations of such methods~\cite{lv2025}.
 
-Recent developments published clinical validations of such methods~\cite{lv2025}.
-
-Analyze weaknesses and possible knowledge gaps in noninvasive estimation.
-
-Show identifiability methods~\cite{raue2009,wieland2021}.
-
-Thus the purpose of this work is to reproduce literature noninvasive muscle estimation,
-explore the robustness and identifiability of such formulations and propose improvements.
-
+Despite these advances, challenges remain regarding the robustness and identifiability
+of noninvasive respiratory muscle pressure estimation. Identifiability analysis, which determines
+whether model parameters can be uniquely determined from available data, is essential for ensuring
+meaningful physiological interpretation~\cite{raue2009,wieland2021}.
+Therefore, this work aims to reproduce existing noninvasive effort estimation algorithms,
+compare and evaluate them with practical identifiability techniques and statistical analysis
+in experimetnal data. This work also propose and assess methodological improvements to these algorithms.
