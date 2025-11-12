@@ -4,15 +4,12 @@
 \section{Algorithms formulation}
 
 Assuming a first-order model for the respiratory system~\cite{bates2009}:
-
 \begin{equation}
 P_{\text{total}}(t) = P_{\text{aw}}(t) + P_{\text{mus}}(t) = E_{\text{rs}} \cdot V(t) + R_{\text{rs}} \cdot \dot{V}(t) + P_0
 \label{eq:equation_motion}
 \end{equation}
 
-
-The explored \hl{(determininistic/modelling (?))} algorithms apply contrained optimization techniques
-in the respiratory equation of motion.
+The explored model-based algorithms apply contrained optimization techniques in the respiratory equation of motion.
 The problem of estimating $P_{\text{mus}}$, $R$, $E$ within a single cycle is indetermined ($N+2$ variables for $N$ equations as will be detailed below),
 but the explored algorithms argument is that by introducing constraints on the $P_{\text{mus}}$ waveform format and the ranges of possible resistances and compliances, the problem becomes solvable.
 
@@ -36,8 +33,8 @@ to be minimized subject to the following constraints:
 \end{align}
 \end{subequations}
 where $t_k$ denotes the $k$th time sample, $N$ is the total number of time samples in the breath.
-\hl{The motivation behind these constraints is to define monotonicity of the muscle pressure format?} (Equations~\ref{eq:constraint1}–\ref{eq:constraint3}) is the
-\hl{The parameters $t_m$ and $t_q$ define:}
+The motivation behind these constraints (Equations~\ref{eq:constraint1}–\ref{eq:constraint3}) is to define monotonicity of the muscle pressure format.
+The parameters $t_m$ and $t_q$ define, respectively, the peak and end of the respiratory effort waveform.
 
 The unknown variables over which $J$ is minimized are $R, E, \tilde{P}_{\text{mus}}(t_1), \ldots, \tilde{P}_{\text{mus}}(t_N)$.
 Additional constraints limit $\tilde{P}_{\text{mus}}(t_k)$, $R$ and $E$ to positive values and within their physiological ranges:
@@ -53,34 +50,59 @@ LS optimization problem. In other words, Another way to interpret the Equation~\
 the optimization solver is trying to obtain the closest possible estimative of $P_{\text{aw}}$
 given the equation of motion, flow, volume and constraints on the unknown variables.
 We can call the second term of the Equation~\ref{eq:cost_function} the estimative of airway pressure:
-
-
-
-
-
 \begin{equation}
 P_{\text{aw}}^{\text{est}}(t_k)  = \left(R\dot{V}(t_k) + E V(t_k) + \tilde{P}_{\text{mus}}(t_k)\right)
 \label{eq:paw_est}
 \end{equation}
 
-~\cite{victorjr2023} improved the estimation and computational time by adding switching times:
-explain Pawest -> equation
+The algorithm proposed by~\cite{victorjr2023} reformulates the constrained optimization of~\cite{vicario2016}
+as a mixed-integer quadratic programming (MIQP) problem. In this model, binary variables encode the switching
+instants where the muscle pressure $P_{\text{mus}}(t)$ changes monotonicity, allowing
+automatic identification of inspiratory, relaxation, and inactive phases within a single optimization step.
+The method still minimizes the quadratic cost function of Equation~\ref{eq:cost_function},
+subject to physiological bounds on $R$, $E$, and $P_{\text{mus}}(t)$.
 
+The recent algorithm by~\cite{lv2025} applied this formulations in real-time clinical settings.
+It maintains the first-order RC formulation but replaces the monotonic constraints with
+a cubic polynomial model for $P_{\text{mus}}(t)$:
+\begin{equation}
+P_{\text{mus}}(t_k) = a_0 + a_1 t_k + a_2 t_k^2 + a_3 t_k^3
+\label{eq:lv_cubic}
+\end{equation}
+subject to physiological shape constraints:
+\begin{subequations}\label{eq:lv_constraints}
+\begin{align}
+P_{\text{mus}}(t_0) &= 0 \label{eq:lv_constraint1} \\
+P_{\text{mus}}(t_m) &= 0 \label{eq:lv_constraint2} \\
+P'_{\text{mus}}(t_0) &< 0 \label{eq:lv_constraint3} \\
+P''_{\text{mus}}(t_0) &> 0 \label{eq:lv_constraint4} \\
+P'''_{\text{mus}}(t_0) &< 0 \label{eq:lv_constraint5}
+\end{align}
+\end{subequations}
 
-Another explored algorithm is the one proposed by~\cite{lv2025}. It is given as follows:
+Additionally, the physiological bounds on resistance, elastance, and muscle pressure
+follow the same form as Equations~\ref{eq:R_bounds}–\ref{eq:pmus_bounds}.
 
 \section{Implementation environment}
 
-Gurobi, YALMIP, MATLAB softwares, hardware used.
+All algorithms were implemented and executed in MATLAB\textsuperscript{\textregistered} R2024b,
+using the YALMIP optimization framework and the commercial solver Gurobi Optimizer~(version~12.0.2).
+Numerical routines, waveform processing, and visualization scripts were developed.
 
-Code repository available in github/pmus-benchmarking.git (instructions of use, reproducibility).
+Computations were performed on a
+Dell\textsuperscript{\textregistered} Inspiron laptop equipped with a
+12th~Gen Intel\textsuperscript{\textregistered} Core\texttrademark~i5-1235U CPU (1.30~GHz, 10~cores) and 16~GB~RAM.
+
+All code and data used in this study are publicly available
+online\footnote{\url{https://github.com/yu-hao123/pmus-benchmarking}}
+for reproducibility purposes. It includes the complete implementation scripts,
+example datasets, and usage instructions.
 
 \section{Proposed improvements}
-
 This work proposes a improvement of using the information of more than one cycle,
 as opposed to the current standard/understandings on non-invasive respiratory effort estimation.
 For that purpose, excitation maneuvers will be applied in the experimental setting
-with the objective to create variability and \hl{add more information} to the optimization problem.
+with the objective to create variability and imporve the identifiability of the optimization problem.
 
 \subsection{Maneuvers}
 
@@ -106,13 +128,36 @@ Description of all attempted maneuvers: P0.1, inspiratory pause, PS increase.
 
 \subsection{Profile likelihood}
 
-Using the definition in~\cite{raue2009}
+Following the definition in~\cite{raue2009,wieland2021}, the profile likelihood was
+used to assess the practical identifiability of the estimated parameters.
+For each parameter, the cost function was re-optimized over all remaining parameters
+while varying the current parameter, and the resulting likelihood profile can be used
+to identify flat regions and determine confidence interval boundaries (\Cref{fig:C3_profile_likelihood}).
+\begin{figure}[ht]
+    \caption{
+        Illustrative example of likelihood contour plots and profile likelihood for an
+        identifiable parameter and structurally and practically nonidentifiable parameters.
+    }\label{fig:C3_profile_likelihood}
+    \begin{center}
+        \includegraphics[width=\textwidth]{chapters/figures/C3_profile_likelihood.jpg}
+    \end{center}
+    {\small Source:~\cite{wieland2021}}
+\end{figure}{}
 
 \subsection{Cost function heatmap}
 
-\subsection{PMUS variability within cost valley}
+A grid search was performed across predefined ranges of $R_{\text{rs}}$ and $E_{\text{rs}}$, applying fixed MIQP and cubic estimators.
+The resulting cost landscape was visualized as a heatmap,
+highlighting regions of minimum cost (valleys).
+
+\subsection{$P_{\text{mus}}$ variability within cost valley}
+
+Within the low-cost valley identified from the heatmap,
+the variability of $P_{\text{mus}}$ amplitudes and $\text{PTP}_{\text{mus}}$ was evaluated.
+For all points below a defined cost threshold, Bland-Altman plots were generated.
 
 \subsection{Global statistics}
 
-PMUS Amplitudes and PTPmus Bland-Altman plot in experimental and patient data. \\
-Performance comparison of the three algorithms Victor, Lv, Xia.
+Bland-Altman plots of $P_{\text{mus}}$ amplitudes and $\text{PTP}_{\text{mus}}$ were applied to experimental and patient datasets.
+Comparative performance of the three algorithms (MIQP, N-PMUS, dual) was assessed using bias and limits of agreement
+across multiple breaths and subjects.
