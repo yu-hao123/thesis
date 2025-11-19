@@ -1,9 +1,10 @@
-\chapter{RESULTS}
+\chapter{RESULTS AND DISCUSSION}
 
+\hl{Add single cycle estimation plots of CUBIC formulation}
 
 \begin{figure}[ht]
     \caption{
-        MIQP-based estimation for a single respiratory cycle.
+        MIQP-based estimation for a single respiratory (PSV) cycle.
     }\label{fig:C4_miqp_best_cycle}
     \begin{center}
         \includegraphics[width=.8\textwidth]{chapters/figures/C4_miqp_best_cycle.png}
@@ -14,7 +15,7 @@
 
 \begin{figure}[ht]
     \caption{
-        MIQP-based estimation for a single respiratory cycle with fixed $R$ and $C$ set to their true values (obtained from LS using ASL ${P}_{mus}$).
+        MIQP-based estimation for a single respiratory cycle (PSV) with fixed $R$ and $C$ set to their true values (obtained from LS using ASL ${P}_{mus}$).
     }\label{fig:C4_miqp_true_cycle}
     \begin{center}
         \includegraphics[width=.75\textwidth]{chapters/figures/C4_miqp_true_cycle.png}
@@ -24,7 +25,7 @@
 
 \begin{figure}[ht]
     \caption{
-        Heatmap of the MIQP estimator cost function for a single respiratory cycle.
+        Residual cost surface (log10) of the MIQP estimator for a single respiratory cycle (PSV).
     }\label{fig:C4_miqp_heatmap_cycle}
     \begin{center}
         \includegraphics[width=.75\textwidth]{chapters/figures/C4_heatmap_miqp_cycle.png}
@@ -33,10 +34,30 @@
 \end{figure}{}
 \begin{figure}[ht]
     \caption{
-        Heatmap of the N-PMUS estimator cost function for a single respiratory cycle.
+        Residual cost surface (log10) of the N-PMUS estimator for a single respiratory cycle (PSV).
     }\label{fig:C4_cubic_heatmap_cycle}
     \begin{center}
         \includegraphics[width=.75\textwidth]{chapters/figures/C4_heatmap_cubic_cycle.png}
     \end{center}
     %{\small Source: Produced by the author (2025)}
 \end{figure}{}
+
+
+\begin{figure}[!ht]\caption{
+    (a) MIQP residual cost surface (log10) for a regular respiratory cycle (PSV).
+    (b) MIQP residual cost surface (log10) for a subsequent respiratory cycle (PSV) with an inspiratory pause.
+}
+\begin{subfigure}{.49\textwidth}
+  \centering
+  % include first image
+  \caption{}\label{fig:C4_heatmap_miqp_nihon_normal}
+  \includegraphics[width=\linewidth]{chapters/figures/C4_heatmap_miqp_nihon_normal.png}
+\end{subfigure}
+\hfill
+\begin{subfigure}{.49\textwidth}
+  \centering
+  % include second image
+  \caption{}\label{fig:C4_heatmap_miqp_nihon_pause}
+  \includegraphics[width=\linewidth]{chapters/figures/C4_heatmap_miqp_nihon_pause.png}
+\end{subfigure}\label{fig:best_respiratory_pause}
+\end{figure}
