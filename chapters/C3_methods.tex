@@ -13,7 +13,7 @@ The explored model-based algorithms apply contrained optimization techniques in 
 The problem of estimating $P_{\text{mus}}$, $R$, $E$ within a single cycle is indetermined ($N+2$ variables for $N$ equations as will be detailed below),
 but the explored algorithms argument is that by introducing constraints on the $P_{\text{mus}}$ waveform format and the ranges of possible resistances and compliances, the problem becomes solvable.
 
-~\cite{vicario2016} formulated the estimation problem as a constrained optimization problem with cost function:
+~\cite{vicario2016} formulated the estimation problem as a constrained least-squares optimization problem with cost function:
 \begin{equation}
 J = \sum_{k=1}^{N}
 \left(
@@ -32,7 +32,8 @@ to be minimized subject to the following constraints:
 && \text{for } k = q,q+1,\ldots,N-1 \label{eq:constraint3}
 \end{align}
 \end{subequations}
-where $t_k$ denotes the $k$th time sample, $N$ is the total number of time samples in the breath.
+where $t_k$ denotes the $k$th time sample, $N$ is the total number of time samples in the breath
+and $\tilde{P}_{\text{mus}} = P_{\text{mus}} - P_0$.
 The motivation behind these constraints (Equations~\ref{eq:constraint1}–\ref{eq:constraint3}) is to define monotonicity of the muscle pressure format.
 The parameters $t_m$ and $t_q$ define, respectively, the peak and end of the respiratory effort waveform.
 
@@ -46,10 +47,10 @@ E_{\text{min}} &\le E \le E_{\text{max}} \label{eq:E_bounds} \\
 \end{align}
 \end{subequations}
 
-LS optimization problem. In other words, Another way to interpret the Equation~\ref{eq:cost_function} is that
+Another way to interpret the Equation~\ref{eq:cost_function} is that
 the optimization solver is trying to obtain the closest possible estimative of $P_{\text{aw}}$
 given the equation of motion, flow, volume and constraints on the unknown variables.
-We can call the second term of the Equation~\ref{eq:cost_function} the estimative of airway pressure:
+We call the second term of the Equation~\ref{eq:cost_function} the estimative of airway pressure:
 \begin{equation}
 P_{\text{aw}}^{\text{est}}(t_k)  = \left(R\dot{V}(t_k) + E V(t_k) + \tilde{P}_{\text{mus}}(t_k)\right)
 \label{eq:paw_est}
@@ -63,7 +64,7 @@ The method still minimizes the quadratic cost function of Equation~\ref{eq:cost_
 subject to physiological bounds on $R$, $E$, and $P_{\text{mus}}(t)$.
 
 The recent algorithm by~\cite{lv2025} applied this formulations in real-time clinical settings.
-It maintains the first-order RC formulation but replaces the monotonic constraints with
+It maintains the first-order $RC$ formulation but replaces the monotonic constraints with
 a cubic polynomial model for $P_{\text{mus}}(t)$:
 \begin{equation}
 P_{\text{mus}}(t_k) = a_0 + a_1 t_k + a_2 t_k^2 + a_3 t_k^3
@@ -81,7 +82,7 @@ P'''_{\text{mus}}(t_0) &< 0 \label{eq:lv_constraint5}
 \end{subequations}
 
 Additionally, the physiological bounds on resistance, elastance, and muscle pressure
-follow the same form as Equations~\ref{eq:R_bounds}–\ref{eq:pmus_bounds}.
+follow the same form as Equations~\ref{eq:R_bounds}-\ref{eq:pmus_bounds}.
 
 \section{Implementation environment}
 
@@ -91,48 +92,97 @@ Numerical routines, waveform processing, and visualization scripts were develope
 
 Computations were performed on a
 Dell\textsuperscript{\textregistered} Inspiron laptop equipped with a
-12th~Gen Intel\textsuperscript{\textregistered} Core\texttrademark~i5-1235U CPU (1.30~GHz, 10~cores) and 16~GB~RAM.
+12th~Gen Intel\textsuperscript{\textregistered} Core\texttrademark~i5--1235U CPU (1.30~GHz, 10~cores) and 16~GB~RAM.
 
 All code and data used in this study are publicly available
 online\footnote{\url{https://github.com/yu-hao123/pmus-benchmarking}}
 for reproducibility purposes. It includes the complete implementation scripts,
 example datasets, and usage instructions.
 
-\section{Proposed improvements}
-This work proposes a improvement of using the information of more than one cycle,
-as opposed to the current standard/understandings on non-invasive respiratory effort estimation.
-For that purpose, excitation maneuvers will be applied in the experimental setting
-with the objective to create variability and imporve the identifiability of the optimization problem.
+\section{Modifications and proposed improvements}
+This work proposes using the information and variability from multiple respiratory cycles simultaneously
+within the optimization algorithm, in contrast to current standards in non-invasive respiratory effort estimation,
+which rely on single cycle estimation.
+To support this approach, excitation maneuvers were applied in the experimental setting
+to introduce variability and improve the identifiability of the estimation problem.
+\subsection{Maneuvers}\label{subsec:maneuvers}
+\hl{Description of all attempted maneuvers, R, C shouldn't change in short periods of time}
+(\Cref{fig:C3_maneuvers}): P0.1, inspiratory pause, PS increase.
 
-\subsection{Maneuvers}
+\begin{figure}[H]
+    \caption{
+        Example of all three proposed maneuvers (P0.1, inspiratory pause and PS increase, in this order).
+        Each maneuver is preceeded by a regular cycle.
+    }\label{fig:C3_maneuvers}
+    \begin{center}
+        \includegraphics[width=\textwidth]{chapters/figures/C3_maneuvers.png}
+    \end{center}
+\end{figure}{}
 
-Description of all attempted maneuvers: P0.1, inspiratory pause, PS increase.
+\subsection{Optimization with fixed R, C values}\label{subsec:fixed_optimization}
+The MIQP and N-PMUS methods were extended to allow optimization using fixed $R$ and $C$ values.
+This approach is useful for evaluation methods that perform grid searches over the full range
+of possible $R-C$ combinations. It also helps to visualize what $P_{\text{mus}}$ the estimator
+would produce for a given pair of $R$ and $C$.
+
+An important observation is that this method is not
+equivalent to simply substituting fixed $R$, $C$, $P_{\text{aw}}$ and $\dot{V}$
+directly into the equation of motion (\ref{eq:equation_motion}) to compute $P_{\text{mus}}$.
+In the fixed-$RC$ optimization formulation, the solution space for $P_{\text{mus}}$ still satisfies
+the imposed monotonicity constraints, whereas that would not be the case with direct substitution
+in the equation of motion.
 
 \subsection{Dual cycle estimation}
+This work extended the original single-cycle MIQP formulation into a dual-cycle joint estimation approach.
+Two consecutive respiratory cycles are concatenated into a single optimization problem that shares the
+same resistance and elastance parameters. Each cycle maintains its own switching instants
+(still implemented as binary variables with monotonicity constraints).
+In this way, information from both cycles are incorporated into the optimization problem.
+
+The proposed methods evaluates which of the maneuvers described in \Cref{subsec:maneuvers}
+are more effective for improving the identifiability
+of the estimation problem.
+Dual-cycle estimation is applied to pairs of regular
+and subsequent maneuvered cycles.
+For example, in \Cref{fig:C3_maneuvers} there are three of these pairs.
+
 
 \section{Data acquisition}
 \subsection{Benchtop experiment}
 \begin{itemize}
     \item ASL 5000\textsuperscript{\texttrademark} Breathing Simulator is connected to a mechanical ventilator FlexiMag Max 700
 (Magnamed\textsuperscript{\textregistered}, Sao Paulo, Brazil) configuration steps (pressure, resistance, compliance), ventilation modes, physical setup.
+    \item ASL 5000\textsuperscript{\texttrademark} was also connected to a NKV-550
+    (NIHON KOHDEN\textsuperscript{\textregistered}, Tokyo, Japan) mechanical ventilator.
     \item Sampling frequency, acquisition duration, signal pre-processing.
 \end{itemize}
 
-\subsection{Patient data analysis (Restrospective (?))}
+\hl{Discuss acquiring data in multiple modes of ventilation (VCV, PCV, PSV).}
+
+\subsection{Patient data analysis}
+
+This work analyzes a retrospective clinical dataset~\cite{plens2024}
+ of esophageal pressure measurements in adults in pressure support ventilation.
 \begin{itemize}
     \item Dataset origin, ethical comittee number, anonymization.
     \item Patients description, inclusion/exclusion criteria, condition, modes, duration.
 \end{itemize}
 
-\section{Evaluation methods}
+\section{Evaluation metrics}
+
+The following evaluation metrics are used to compare the different estimation algorithms.
+Some of these metrics are standard in the respiratory effort estimation literature,
+while others have not been previously applied to effort-estimation algorithms,
+but provide additional perspectives with respect to on the algorithms' ability
+to resolve the estimation problem's indetermined nature.
 
 \subsection{Profile likelihood}
 
-Following the definition in~\cite{raue2009,wieland2021}, the profile likelihood was
+Following the definition in~\cite{raue2009,wieland2021}, the profile likelihood is
 used to assess the practical identifiability of the estimated parameters.
-For each parameter, the cost function was re-optimized over all remaining parameters
+For each parameter, the cost function is re-optimized over all remaining parameters
 while varying the current parameter, and the resulting likelihood profile can be used
-to identify flat regions and determine confidence interval boundaries (\Cref{fig:C3_profile_likelihood}).
+to observe flat regions and determine confidence interval boundaries (\Cref{fig:C3_profile_likelihood}).
 \begin{figure}[ht]
     \caption{
         Illustrative example of likelihood contour plots and profile likelihood for an
@@ -144,20 +194,21 @@ to identify flat regions and determine confidence interval boundaries (\Cref{fig
     {\small Source:~\cite{wieland2021}}
 \end{figure}{}
 
-\subsection{Cost function heatmap}
+\subsection{Cost function residual surface}
 
-A grid search was performed across predefined ranges of $R_{\text{rs}}$ and $E_{\text{rs}}$, applying fixed MIQP and cubic estimators.
-The resulting cost landscape was visualized as a heatmap,
+A grid search can be performed across predefined ranges of $R_{\text{rs}}$ and $E_{\text{rs}}$,
+applying the fixed MIQP and fixed cubic estimators, as described in \Cref{subsec:fixed_optimization}.
+The resulting cost surface is visualized as a heatmap,
 highlighting regions of minimum cost (valleys).
 
-\subsection{$P_{\text{mus}}$ variability within cost valley}
+\subsection{$P_{\text{mus}}$ variability within residual cost surface valley}
 
-Within the low-cost valley identified from the heatmap,
-the variability of $P_{\text{mus}}$ amplitudes and $\text{PTP}_{\text{mus}}$ was evaluated.
-For all points below a defined cost threshold, Bland-Altman plots were generated.
+Within the low-cost valley identified from the residual cost surface,
+the variability of $P_{\text{mus}}$ amplitudes and $\text{PTP}_{\text{mus}}$ is evaluated.
+All points below a defined cost threshold are included in a Bland-Altman plot.
 
-\subsection{Global statistics}
+\subsection{Statistical analysis}
 
-Bland-Altman plots of $P_{\text{mus}}$ amplitudes and $\text{PTP}_{\text{mus}}$ were applied to experimental and patient datasets.
-Comparative performance of the three algorithms (MIQP, N-PMUS, dual) was assessed using bias and limits of agreement
+Bland-Altman plots of $P_{\text{mus}}$ amplitudes and $\text{PTP}_{\text{mus}}$ are applied to experimental and patient datasets.
+Performance comparisons of the three algorithms (MIQP, N-PMUS-cubic, dual) are done using bias and limits of agreement
 across multiple breaths and subjects.
