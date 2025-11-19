@@ -26,6 +26,9 @@
 \usepackage{lipsum} % lorem ipsum
 \usepackage{xcolor}  % must come before soul
 \usepackage{soul} % highlight text
+\usepackage{float}
+\usepackage[bottom]{footmisc}
+\usepackage{subcaption}
 
 % ========== Language options ==========
 %\usepackage[brazil]{babel}
@@ -70,19 +73,19 @@
 
 % Pretextual Chapters
 % Patches the unnumbered chapter command \@schapter
-\let\politex@original@schapter\@schapter
+\let\politex@original@schapter\@schapter%
 \def\@schapter#1{%
 	\def\temptitle{#1}%
 	\def\contentstitle{\contentsname}%
 	\def\bibtitle{\POLIbibliographyname}
 
-	\ifx\temptitle\contentstitle
+	\ifx\temptitle\contentstitle%
 		% This is "Sumario". Run original to build TOC
 		% and set the ABNTaftertoc flag to true.
 		\politex@original@schapter{#1}%
 	\else
 		% Check if this is the Bibliography
-		\ifx\temptitle\bibtitle
+		\ifx\temptitle\bibtitle%
 			% This is "References". Run original.
 			% Because ABNTaftertoc is true, it will go to the
 			% TOC, and Part 1 will create its bookmark.
@@ -107,7 +110,8 @@
 
 % ========== Opções do documento ==========
 % Título
-\titulo{Identifiability of Respiratory Mechanics: Limitations of Single Cycle Estimation and Proposal of Multiple Cycle Maneuvers}
+%\titulo{Identifiability of Respiratory Mechanics: Limitations of Single Cycle Estimation and Proposal of Multiple Cycle Maneuvers}
+\titulo{Improving Noninvasive Respiratory Effort Estimation with Multiple Cycle Excitation Maneuvers}
 
 % Autor
 \autor{Yu Hao Wang Xia}
@@ -172,22 +176,22 @@
 }
 
 % ========== Resumo ==========
-\begin{resumo}
-Resumo
-%
-\\[3\baselineskip]
-%
-\textbf{Palavras-Chave:} Palavra, Palavra, Palavra, Palavra, Palavra.
-\end{resumo}
+%\begin{resumo}
+%Resumo
+%%
+%\\[3\baselineskip]
+%%
+%\textbf{Palavras-Chave:} Palavra, Palavra, Palavra, Palavra, Palavra.
+%\end{resumo}
 
 % ========== Abstract ==========
-\begin{abstract}
-Abstract
-%
-\\[3\baselineskip]
-%
-\textbf{Keywords:} Word, Word, Word, Word, Word.
-\end{abstract}
+%\begin{abstract}
+%Abstract
+%%
+%\\[3\baselineskip]
+%%
+%\textbf{Keywords:} Word, Word, Word, Word, Word.
+%\end{abstract}
 
 % ========== Listas (opcional) ==========
 \listadefiguras%
@@ -205,6 +209,7 @@ Abstract
 \include{chapters/C2_objectives}
 \include{chapters/C3_methods}
 \include{chapters/C4_results}
+\include{chapters/C5_next_steps}
 
 % ========== Referências ==========
 % --- IEEE ---
@@ -217,11 +222,11 @@ Abstract
 \bibliography{bibliography_thesis}
 
 % ========== Apêndices (opcional) ==========
-\apendice%
-\chapter{Alpha}
+%\apendice%
+%\chapter{Alpha}
 
 % ========== Anexos (opcional) ==========
-\anexo%
-\chapter{Alpha}
+%\anexo%
+%\chapter{Alpha}
 
 \end{document}
