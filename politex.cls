@@ -65,7 +65,7 @@
 			\renewcommand*{\POLIagradecimentosname}{Acknowledgments}%
 			\renewcommand*{\POLIannexname}{Annex}%
 			\renewcommand*{\POLIappendixname}{Appendix}%
-			\renewcommand*{\POLIbibliographyname}{References}%
+			\renewcommand*{\POLIbibliographyname}{REFERENCES}%
 	}{}
 }
 

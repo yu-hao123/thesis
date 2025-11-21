@@ -17,7 +17,7 @@
 % ========== Packages ==========
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath,amsthm,amsfonts,amssymb}
-\usepackage{graphicx,cite,enumerate,longtable}
+\usepackage{graphicx,enumerate,longtable}
 \usepackage{libertinus}
 \usepackage{booktabs}
 
@@ -103,8 +103,23 @@
 
 % ========== ABNT (requer ABNTeX 2) ==========
 %	http://www.ctan.org/tex-archive/macros/latex/contrib/abntex2
-\usepackage[alf]{abntex2cite}
+%\usepackage[alf]{abntex2cite}
 
+\usepackage{csquotes}
+\usepackage[
+    style=abnt,   % ABNT Numeric style
+    giveninits=true       % Abbreviate first names (J. Smith)
+]{biblatex}
+\addbibresource{bibliography_thesis.bib}        % Seus arquivos de
+
+% === ADD THESE LINES TO USE ITALICS INSTEAD OF BOLD ===
+%\DeclareFieldFormat[book,thesis,monograph,report,manual]{title}{\mkbibemph{#1}}
+%\DeclareFieldFormat{journaltitle}{\mkbibemph{#1}}
+%\DeclareFieldFormat{booktitle}{\mkbibemph{#1}}
+%\DeclareFieldFormat{maintitle}{\mkbibemph{#1}}
+%\DeclareFieldFormat[article,incollection,inproceedings]{title}{#1}
+
+\renewcommand{\mkbibnamefamily}[1]{\MakeUppercase{#1}}
 % Forçar o abntex2 a usar [ ] nas referências ao invés de ( )
 %\citebrackets{[}{]}
 
@@ -214,13 +229,16 @@
 % ========== Referências ==========
 % --- IEEE ---
 %	http://www.ctan.org/tex-archive/macros/latex/contrib/IEEEtran
-%\bibliographystyle{IEEEbib}
+%\bibliographystyle{IEEEtran}
 
 % --- ABNT (requer ABNTeX 2) ---
 %	http://www.ctan.org/tex-archive/macros/latex/contrib/abntex2
-\bibliographystyle{abntex2-alf}
-\bibliography{bibliography_thesis}
 
+%\bibliographystyle{abntex2-alf}
+%\bibliography{bibliography_thesis}
+\begin{espacosimples}
+    \printbibliography[title=\POLIbibliographyname]
+\end{espacosimples}
 % ========== Apêndices (opcional) ==========
 %\apendice%
 %\chapter{Alpha}
