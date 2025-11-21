@@ -10,8 +10,8 @@ P_{\text{total}}(t) = P_{\text{aw}}(t) + P_{\text{mus}}(t) = E_{\text{rs}} \cdot
 \end{equation}
 
 The explored model-based algorithms apply contrained optimization techniques in the respiratory equation of motion.
-The problem of estimating $P_{\text{mus}}$, $R$, $E$ within a single cycle is indetermined ($N+2$ variables for $N$ equations as will be detailed below),
-but the explored algorithms argument is that by introducing constraints on the $P_{\text{mus}}$ waveform format and the ranges of possible resistances and compliances, the problem becomes solvable.
+The problem of estimating $P_{\text{mus}}$, $R$, $E$ within a single cycle is indetermined ($N+2$ variables for $N$ equations),
+but the explored algorithms argument is that by introducing constraints on the muscle pressure waveform format and the ranges of possible resistances and compliances, the problem becomes solvable.
 
 ~\cite{vicario2016} formulated the estimation problem as a constrained least-squares optimization problem with cost function:
 \begin{equation}
@@ -106,7 +106,8 @@ which rely on single cycle estimation.
 To support this approach, excitation maneuvers were applied in the experimental setting
 to introduce variability and improve the identifiability of the estimation problem.
 \subsection{Maneuvers}\label{subsec:maneuvers}
-\hl{Description of all attempted maneuvers, R, C shouldn't change in short periods of time}
+\hl{TO DO: Description of all attempted maneuvers, R, C won't change
+drastically over periods of time, so maneuvers can be performed in spaced intervals}
 (\Cref{fig:C3_maneuvers}): P0.1, inspiratory pause, PS increase.
 
 \begin{figure}[H]
@@ -139,9 +140,8 @@ same resistance and elastance parameters. Each cycle maintains its own switching
 (still implemented as binary variables with monotonicity constraints).
 In this way, information from both cycles are incorporated into the optimization problem.
 
-The proposed methods evaluates which of the maneuvers described in \Cref{subsec:maneuvers}
-are more effective for improving the identifiability
-of the estimation problem.
+The proposed dual-cycle method evaluates which of the maneuvers described in \Cref{subsec:maneuvers}
+are more effective in improving the identifiability of the estimation problem.
 Dual-cycle estimation is applied to pairs of regular
 and subsequent maneuvered cycles.
 For example, in \Cref{fig:C3_maneuvers} there are three of these pairs.
@@ -149,6 +149,9 @@ For example, in \Cref{fig:C3_maneuvers} there are three of these pairs.
 
 \section{Data acquisition}
 \subsection{Benchtop experiment}
+\hl{TO DO: Details on experimental setup.
+ Discuss acquiring data in multiple modes of ventilation (VCV, PCV, PSV).}
+
 \begin{itemize}
     \item ASL 5000\textsuperscript{\texttrademark} Breathing Simulator is connected to a mechanical ventilator FlexiMag Max 700
 (Magnamed\textsuperscript{\textregistered}, Sao Paulo, Brazil) configuration steps (pressure, resistance, compliance), ventilation modes, physical setup.
@@ -157,11 +160,10 @@ For example, in \Cref{fig:C3_maneuvers} there are three of these pairs.
     \item Sampling frequency, acquisition duration, signal pre-processing.
 \end{itemize}
 
-\hl{Discuss acquiring data in multiple modes of ventilation (VCV, PCV, PSV).}
 
 \subsection{Patient data analysis}
 
-This work analyzes a retrospective clinical dataset~\cite{plens2024}
+\hl{TODO: Improve description, This work analyzes a retrospective clinical dataset}~\cite{plens2024}
  of esophageal pressure measurements in adults in pressure support ventilation.
 \begin{itemize}
     \item Dataset origin, ethical comittee number, anonymization.
